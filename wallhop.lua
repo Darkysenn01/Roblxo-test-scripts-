@@ -1,6 +1,6 @@
--- WallHop Pro Script con movimientos locos al saltar sin pared
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
 
 local player = Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
@@ -8,7 +8,6 @@ local humanoid = character:WaitForChild("Humanoid")
 local rootPart = character:WaitForChild("HumanoidRootPart")
 
 local wallDistance = 5
-local tweenService = game:GetService("TweenService")
 
 local function checkWalls()
     local rayParams = RaycastParams.new()
@@ -26,28 +25,32 @@ local function crazyMove()
     local chosenAngle = angles[math.random(1, #angles)]
     local goal = {CFrame = rootPart.CFrame * CFrame.Angles(0, math.rad(chosenAngle), 0)}
     local tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut)
-    local tween = tweenService:Create(rootPart, tweenInfo, goal)
+    local tween = TweenService:Create(rootPart, tweenInfo, goal)
     tween:Play()
 end
 
-humanoid.Jumping:Connect(function()
-    if checkWalls() then
-        print("WallHop activado")
-    else
-        print("Movimientos locos activados")
-        crazyMove()
-    end
-end)
-
--- Interfaz sencilla
+-- Crear texto en pantalla para mostrar estados
 local screenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
 screenGui.Name = "WallHopProGUI"
 
 local textLabel = Instance.new("TextLabel", screenGui)
-textLabel.Size = UDim2.new(0, 200, 0, 50)
-textLabel.Position = UDim2.new(0.5, -100, 0, 20)
+textLabel.Size = UDim2.new(0, 300, 0, 50)
+textLabel.Position = UDim2.new(0.5, -150, 0, 20)
 textLabel.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 textLabel.TextColor3 = Color3.new(1, 1, 1)
-textLabel.Text = "WallHop Pro Activado"
 textLabel.TextScaled = true
 textLabel.Font = Enum.Font.SourceSansBold
+textLabel.Text = "Esperando salto..."
+
+humanoid.Jumping:Connect(function()
+    if checkWalls() then
+        textLabel.Text = "Pared detectada: WallHop activado"
+        print("WallHop activado")
+    else
+        textLabel.Text = "Movimientos locos activados!"
+        crazyMove()
+        print("Movimientos locos activados")
+    end
+    wait(0.5)
+    textLabel.Text = "Esperando salto..."
+end)
