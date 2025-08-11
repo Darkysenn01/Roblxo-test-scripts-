@@ -54,3 +54,4 @@ humanoid.Jumping:Connect(function()
     wait(0.5)
     textLabel.Text = "Esperando salto..."
 end)
+
