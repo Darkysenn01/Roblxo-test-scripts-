@@ -1,13 +1,9 @@
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
+local player = game.Players.LocalPlayer
+local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid") or player.CharacterAdded:Wait():WaitForChild("Humanoid")
 
-local player = Players.LocalPlayer
-local character = player.Character or player.CharacterAdded:Wait()
-local humanoid = character:WaitForChild("Humanoid")
-
--- Función para saltar infinitamente
-RunService.Heartbeat:Connect(function()
-    if humanoid.FloorMaterial ~= Enum.Material.Air then
+while true do
+    if humanoid and humanoid.FloorMaterial ~= Enum.Material.Air then
         humanoid.Jump = true
     end
-end)
+    wait(0.1)
+end
